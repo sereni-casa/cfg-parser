@@ -5,19 +5,33 @@ import { MyButton } from './MyButton'
 export class InputPane extends Component {
   constructor(props) {
     super(props)
-    this.state = { fileName: "", newOne: "" }
+    this.state = { fileName: "", newOne: ""}
     this.refFileInput = React.createRef()
   }
 
   loadFile = () => {
-    this.props.onItemsChange([]) 
+    this.props.onItemsChange([])
     const reader = new FileReader()
     reader.onload = () => {
       for (let line of reader.result.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/))
-        if (line !== "")
-          this.props.onItemsChange([...this.props.items, line])
+        if (line.split(";")[0] !== "")
+          this.props.onItemsChange([...this.props.items, line.split(";")[0]])
     }
     reader.readAsText(this.refFileInput.current.files[0])
+  }
+
+  loadGBKFile = () => {
+    this.props.onItemsChange([])
+    const reader = new FileReader()
+    reader.onload = () => {
+      const bytes = reader.result
+      const gbkDecoder = new TextDecoder('gbk')
+      const string = gbkDecoder.decode(bytes)
+      for (let line of string.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/))
+        if (line.split(";")[0] !== "")
+          this.props.onItemsChange([...this.props.items, line.split(";")[0]])
+    }
+    reader.readAsArrayBuffer(this.refFileInput.current.files[0])
   }
 
   addNewOne = () => {
@@ -36,11 +50,11 @@ export class InputPane extends Component {
           <Table.HeaderCell>
             <Input fluid readOnly placeholder={this.props.kind[0].toUpperCase() + this.props.kind.slice(1) + " file"} value={this.state.fileName} onClick={() => this.refFileInput.current.click()}/>
           </Table.HeaderCell>
-          <Table.HeaderCell collapsing>
+          <Table.HeaderCell>
             <MyButton positive fluid onClick={this.loadFile} disabled={this.state.fileName === ""}>{"Load " + this.props.kind + " file"}</MyButton>
           </Table.HeaderCell>
           <Table.HeaderCell collapsing>
-            <MyButton negative fluid onClick={() => this.props.onItemsChange([])} disabled={this.props.items.length === 0}>Remove all</MyButton>
+            <MyButton positive fluid onClick={this.loadGBKFile} disabled={this.state.fileName === ""}>{"Load GBK " + this.props.kind + " file"}</MyButton>
           </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -67,7 +81,7 @@ export class InputPane extends Component {
           <Table.HeaderCell>
             <Input fluid placeholder={"New " + this.props.kind} value={this.state.newOne} onChange={(event) => this.setState({ newOne: event.target.value })}/>
           </Table.HeaderCell>
-          <Table.HeaderCell>
+          <Table.HeaderCell collapsing>
             <MyButton positive fluid onClick={this.addNewOne} disabled={this.state.newOne === ""}>{"Add new " + this.props.kind}</MyButton>
           </Table.HeaderCell>
           <Table.HeaderCell>

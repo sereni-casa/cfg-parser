@@ -46,7 +46,7 @@ export function OutputPane(props) {
 
   const traceBack = (node) => {
     if (node.yNode === null)
-      return <>{node.xStr.slice(1, -1)}</>
+      return <>{(props.quot.length === 0) ? node.xStr : node.xStr.slice(props.quot.length, -props.quot.length)}</>
     if (node.zNode === null)
       return <>[<sub><em>{node.xStr}</em></sub> {traceBack(node.yNode)}]</>
     if (node.xStr[0] === "_")
@@ -61,7 +61,7 @@ export function OutputPane(props) {
     let t = []
     for (let j = 1; j <= words.length; j++) {
       t[j - 1] = []
-      t[j - 1][j] = extend({xStr: `"${words[j - 1]}"`, yNode: null, zNode: null, from: j - 1, to: j})
+      t[j - 1][j] = extend({xStr: props.quot + words[j - 1] + props.quot, yNode: null, zNode: null, from: j - 1, to: j})
       for (let i = j - 2; i >= 0; i--) {
         t[i][j] = []
         for (let k = i + 1; k < j; k++)
@@ -75,15 +75,11 @@ export function OutputPane(props) {
     trees[index] = []
     for (let node of t[0][words.length].filter((node) => node.xStr === props.root)) {
       results[index].push(traceBack(node))
-      trees[index].push(<Tree rootNode={node}></Tree>)
+      trees[index].push(<Tree rootNode={node} quot={props.quot}></Tree>)
     }
   })
 
   return <Tab.Pane>
-    {/* <Header as="h2">Simple rules</Header>
-    <List>{simpleRules.map((item, index) => <List.Item key={index}>{`(${index}) ${item[0]} -> ${item[1]}`}</List.Item>)}</List>
-    <Header as="h2">Binary rules</Header>
-    <List>{binaryRules.map((item, index) => <List.Item key={index}>{`${item[0]} -> ${item[1]} ${item[2]}`}</List.Item>)}</List> */}
     <Table compact="very">
       {/* <Table.Header><Table.Row>
         <Table.HeaderCell colSpan="2">Total: {props.samples.length} samples</Table.HeaderCell>
@@ -96,7 +92,7 @@ export function OutputPane(props) {
           </Table.Row>
           {results[sampleIndex].map((result, resultIndex) => <Table.Row key={resultIndex}>
             <Table.Cell>{result}</Table.Cell>
-            <Table.Cell><Modal basic size="fullscreen" trigger={<MyButton>Show tree</MyButton>} content={trees[sampleIndex][resultIndex]} actions={['Close']} /></Table.Cell>
+            <Table.Cell collapsing><Modal basic size="fullscreen" trigger={<MyButton>Show tree</MyButton>} content={trees[sampleIndex][resultIndex]} actions={['Close']} /></Table.Cell>
           </Table.Row>)}
         </Fragment>)}
       </Table.Body>

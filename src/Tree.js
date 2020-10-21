@@ -1,30 +1,26 @@
 import React from 'react'
 
 export function Tree(props) {
-    const rootNode = props.rootNode
-
-    function max(...items) {
-        let max = 0
-        for (let item of items)
-            if (item > max)
-                max = item
-        return max
-    }
+    const { rootNode, quot } = props
 
     function traceBack(node, depth) {
         node.depth = depth
         if (node.yNode === null) {
             node.children = []
-            return depth
+            return
         }
         if (node.zNode === null) {
             node.children = [node.yNode]
             node.yNode.isFirstChild = true
             node.yNode.isLastChild = true
-            return max(depth, traceBack(node.yNode, depth + 1))
+            traceBack(node.yNode, depth + 1)
+            return
         }
-        if (node.xStr[0] === "_")
-            return max(depth, traceBack(node.yNode, depth), traceBack(node.zNode, depth))
+        if (node.xStr[0] === "_") {
+            traceBack(node.yNode, depth)
+            traceBack(node.zNode, depth)
+            return
+        }
         
         let firstNode = node.yNode
         node.children = [node.zNode]
@@ -41,10 +37,11 @@ export function Tree(props) {
         firstNode.isFirstChild = true
         firstNode.isLastChild = false
             
-        return max(depth, traceBack(node.yNode, depth + 1), traceBack(node.zNode, depth + 1))
+        traceBack(node.yNode, depth + 1)
+        traceBack(node.zNode, depth + 1)
     }
 
-    const maxDepth = traceBack(rootNode, 0)
+    traceBack(rootNode, 0)
 
     let nodes = [rootNode]
     let rows = []
@@ -64,8 +61,11 @@ export function Tree(props) {
                         <td style={{width: "50%", borderTop: nodes[i].isFirstChild ? "none" : "1px solid", borderRight: "1px solid"}}></td>
                         <td style={{width: "50%", borderTop: nodes[i].isLastChild ? "none" : "1px solid"}}></td>
                     </tr></tbody></table>}
-                    <div>&emsp;{nodes[i].children.length === 0 ? nodes[i].xStr.slice(1, -1) : nodes[i].xStr}&emsp;</div>
-                    {nodes[i].children.length === 0 ? <></> : <table style={{width: "100%", height: "1em", borderSpacing: "0"}}><tbody><tr><td style={{width: "50%", borderRight: "1px solid"}}></td><td style={{width: "50%"}}></td></tr></tbody></table>}
+                    <div>&emsp;{(nodes[i].children.length === 0 && quot.length > 0) ? nodes[i].xStr.slice(quot.length, -quot.length) : nodes[i].xStr}&emsp;</div>
+                    {nodes[i].children.length === 0 ? <></> : <table style={{width: "100%", height: "1em", borderSpacing: "0"}}><tbody><tr>
+                        <td style={{width: "50%", borderRight: "1px solid"}}></td>
+                        <td style={{width: "50%"}}></td>
+                    </tr></tbody></table>}
                 </td>
             </>)
             rowsAtCol[nodes[i].depth] = nodes[i].to
