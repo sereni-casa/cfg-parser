@@ -1,5 +1,5 @@
 import React, { Fragment } from "react"
-import { Modal, Tab, Table } from 'semantic-ui-react'
+import { Accordion, Message, Modal, Tab, Table } from 'semantic-ui-react'
 import { MyButton } from "./MyButton"
 import { Tree } from "./Tree"
 
@@ -97,5 +97,10 @@ export function OutputPane(props) {
         </Fragment>)}
       </Table.Body>
     </Table>
+    {simpleRules.length > 0 ? <Accordion styled fluid defaultActiveIndex={-1} panels={[{key: 'simpleRules', title: 'Rules without vertical lines', content: {content: (
+      <Message><pre>
+        {simpleRules.map(rule => `${rule[0]} -> ${rule[1]}`).join('\n')}
+      </pre></Message>
+    )}}]} /> : <></>}
   </Tab.Pane>
 }

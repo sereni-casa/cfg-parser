@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Header, Input, List, Message, Tab, Radio, Label } from 'semantic-ui-react'
-import { InputPane } from "./InputPane"
+import { InputTable } from "./InputTable"
 import { OutputPane } from "./OutputPane"
 
 export default class App extends Component {
@@ -15,7 +15,7 @@ export default class App extends Component {
 
   handleQuotChange = (e, { value }) => this.setState({ quot: value })
 
-  rulePaneRender = () => <InputPane key="rule" kind="rule" items={this.state.rules} onItemsChange={this.handleRulesChange}>
+  rulePaneRender = () => <Tab.Pane>
     <Message><Message.List>
       <Message.Item>
         Non-terminal symbols are:&emsp;
@@ -31,11 +31,16 @@ export default class App extends Component {
       </Message.Item>
       <Message.Item>Rules with the same left-hand side can be joined with vertical lines (|), e.g. <Label>{`NP -> N | AdjP N | N PP | AdjP N PP`}</Label>.</Message.Item>
     </Message.List></Message>
-  </InputPane>
+    <InputTable key="rule" kind="rule" items={this.state.rules} onItemsChange={this.handleRulesChange} />
+  </Tab.Pane>
 
-  samplePaneRender = () => <InputPane key="sample" kind="sample" items={this.state.samples} onItemsChange={this.handleSamplesChange}>
-    <Message><Message.List><Message.Item>Terminal symbols should be space-separated, e.g. <Label>王冕 死 了 父亲</Label>.</Message.Item></Message.List></Message>
-  </InputPane>
+  samplePaneRender = () => <Tab.Pane>
+    <Message><Message.List>
+      <Message.Item>Terminal symbols should be space-separated.</Message.Item>
+      {/* <Message.Item>Terminal symbols should be space-separated, e.g. <Label>王冕 死 了 父亲</Label>.</Message.Item> */}
+    </Message.List></Message>
+    <InputTable key="sample" kind="sample" items={this.state.samples} onItemsChange={this.handleSamplesChange} />
+  </Tab.Pane>
 
   rootPaneRender = () => <Tab.Pane>
     <Input labelPosition='left' value={this.state.root} onChange={event => this.setState({root: event.target.value})}><Label>Start symbol</Label><input /></Input>
@@ -54,7 +59,7 @@ export default class App extends Component {
         { menuItem: "Parse", render: this.resultPaneRender }
       ]} />
       
-      <Container textAlign='center'><br /><List link horizontal><List.Item>Version 201021</List.Item></List></Container>
+      <Container textAlign='center'><br /><List link horizontal><List.Item>Version 201025</List.Item></List></Container>
       
     </Container>
 }

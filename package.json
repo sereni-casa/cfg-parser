@@ -1,6 +1,6 @@
 {
   "name": "cfg-parser",
-  "version": "0.1.201021",
+  "version": "0.1.201025",
   "private": true,
   "homepage": "https://cfg-parser.okese.net",
   "dependencies": {
