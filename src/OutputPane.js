@@ -92,7 +92,7 @@ export function OutputPane(props) {
           </Table.Row>
           {results[sampleIndex].map((result, resultIndex) => <Table.Row key={resultIndex}>
             <Table.Cell>{result}</Table.Cell>
-            <Table.Cell collapsing><Modal basic size="fullscreen" trigger={<MyButton>Show tree</MyButton>} content={trees[sampleIndex][resultIndex]} actions={['Close']} /></Table.Cell>
+            <Table.Cell collapsing><Modal basic size="fullscreen" trigger={<MyButton>Tree</MyButton>} content={trees[sampleIndex][resultIndex]} actions={['Close']} /></Table.Cell>
           </Table.Row>)}
         </Fragment>)}
       </Table.Body>
