@@ -63,7 +63,8 @@ class App extends React.Component {
         <br />
         <List horizontal>
           <List.Item>v{process.env.REACT_APP_VERSION}</List.Item>
-          <List.Item>{new Date().getFullYear() + (new Date().getMonth() + 1).toString().padStart(2, '0') + new Date().getDate().toString().padStart(2, '0')}</List.Item>
+          {/* <List.Item>{new Date().getFullYear() + (new Date().getMonth() + 1).toString().padStart(2, '0') + new Date().getDate().toString().padStart(2, '0')}</List.Item> */}
+          <List.Item>20230507</List.Item>
           <List.Item as="a" href="https://sereni.casa/">SERENI·CASA</List.Item>
           <List.Item as="a" href="https://github.com/sereni-casa/cfg-parser"><Icon name='github' /></List.Item>
         </List>
